@@ -126,7 +126,7 @@
 - **Not committed!**  
 - You must add your VirusTotal API key here as:  
   ```
-  VITE_VIRUSTOTAL_API_KEY=your_key_here
+  VIRUSTOTAL_API_KEY=your_key_here
   ```
 </details>
 
