@@ -4,10 +4,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useThreatAnalysis } from "./ThreatAnalysisContext";
 import { useNavigate } from "react-router-dom";
 
-const VT_API_KEY = import.meta.env.VITE_VT_API_KEY;
-const VT_SCAN_URL = "https://www.virustotal.com/api/v3/urls";
-const VT_REPORT_URL = "https://www.virustotal.com/api/v3/analyses/";
-
 const THREAT_LABELS = [
   { level: "Safe", color: "bg-green-100 text-green-700", desc: "No threats detected." },
   { level: "Suspicious", color: "bg-yellow-100 text-yellow-700", desc: "Some signs of threat." },
@@ -67,34 +63,59 @@ export default function LinkTextAnalysis() {
 
     if (isUrl(input)) {
       try {
-        
-        const submitRes = await fetch(VT_SCAN_URL, {
+        const submitRes = await fetch("/api/scan", {
           method: "POST",
           headers: {
-            "x-apikey": VT_API_KEY,
-            "content-type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/json"
           },
-          body: `url=${encodeURIComponent(input.trim())}`
+          body: JSON.stringify({ url: input.trim() })
         });
 
-        if (!submitRes.ok) {
-          throw new Error("Request failed.");
+        // --- CHECK THE RESPONSE HERE ---
+        let submitData;
+        try {
+          submitData = await submitRes.json();
+        } catch (jsonErr) {
+          throw new Error("Failed to parse server response.");
         }
-        const submitData = await submitRes.json();
+
+        if (!submitRes.ok || !submitData.data || !submitData.data.id) {
+          // Show a detailed error if possible
+          throw new Error(
+            typeof submitData.error === "object"
+              ? JSON.stringify(submitData.error)
+              : (submitData.error || "VirusTotal submission failed.")
+          );
+        }
+        // --------------------------------
+
         const analysisId = submitData.data.id;
 
-        let reportData, tries = 0;
+        let reportData;
+        let tries = 0;
         while (tries < 10) {
-          const reportRes = await fetch(VT_REPORT_URL + analysisId, {
-            headers: { "x-apikey": VT_API_KEY }
+          const reportRes = await fetch("/api/report", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ analysisId }),
           });
-          reportData = await reportRes.json();
+          try {
+            reportData = await reportRes.json();
+          } catch (jsonErr) {
+            throw new Error("Failed to parse analysis report response.");
+          }
           if (reportData.data?.attributes?.status === "completed") break;
           await new Promise(res => setTimeout(res, 1200));
           tries++;
         }
 
-        if (!reportData.data?.attributes?.results) throw new Error("Analysis timed out or failed.");
+        if (!reportData || !reportData.data?.attributes?.results) {
+          throw new Error(
+            (reportData && reportData.error)
+              ? (typeof reportData.error === "object" ? JSON.stringify(reportData.error) : reportData.error)
+              : "Analysis timed out or failed."
+          );
+        }
 
         const stats = reportData.data.attributes.stats;
         const positives = stats.malicious + stats.suspicious;
@@ -121,11 +142,10 @@ export default function LinkTextAnalysis() {
         setAnalysis(analysisResult);
         toast.success("Scan completed successfully!");
       } catch (e) {
-        setErr(e.message);
+        setErr(e.message || JSON.stringify(e));
         toast.error("Scan failed!");
       }
     } else {
-      
       const threat = checkTextThreat(input);
       const analysisResult = {
         input: input.trim(),
@@ -148,7 +168,6 @@ export default function LinkTextAnalysis() {
 
   const handleViewFullAnalysis = () => {
     if (result) {
-      
       navigate("/smartriskscoring");
     }
   };

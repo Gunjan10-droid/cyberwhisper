@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import fetch from "node-fetch"; // Make sure to install: npm install node-fetch
 
 dotenv.config();
 
@@ -8,37 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Load ENV variables
-// const mnemonic = process.env.ALGO_MNEMONIC;
-// const sender = process.env.ALGO_SENDER_ADDRESS ? process.env.ALGO_SENDER_ADDRESS.trim() : "";
-// const receiver = process.env.ALGO_RECEIVER_ADDRESS
-//   ? process.env.ALGO_RECEIVER_ADDRESS.trim()
-//   : sender;
-// const algodServer = process.env.ALGOD_SERVER;
-// const algodPort = process.env.ALGOD_PORT || "";
-// const algodToken = process.env.ALGOD_TOKEN || "";
-
-// // Debug prints
-// console.log("Loaded env file values:");
-// console.log("ALGO_MNEMONIC:", mnemonic ? "[LOADED]" : "[MISSING]");
-// console.log("ALGO_SENDER_ADDRESS:", sender);
-// console.log("ALGO_RECEIVER_ADDRESS:", receiver);
-// console.log("ALGOD_SERVER:", algodServer);
-
-// if (!mnemonic || !sender || !receiver || !algodServer) {
-//   throw new Error("Missing environment variables for Algorand config");
-// }
-
-// // Mock account log
-// console.log("Recovered account object:", {
-//   addr: sender,
-//   sk: "[HIDDEN]",
-// });
-// console.log("Account addr:", sender);
-// console.log("Account sk exists:", true);
-// console.log("Sender address length:", sender.length);
-// console.log("Receiver address length:", receiver.length);
-
+// Blockchain log endpoint (existing)
 app.post("/api/log", async (req, res) => {
   try {
     const note = req.body.note || "No message provided";
@@ -54,6 +25,48 @@ app.post("/api/log", async (req, res) => {
   }
 });
 
-app.listen(5000, () =>
-  console.log("Algorand logger listening on http://localhost:5000")
-);
+// VirusTotal scan endpoint
+app.post('/api/scan', async (req, res) => {
+  const { url } = req.body;
+  if (!url) return res.status(400).json({ error: 'Missing URL in request body' });
+
+  try {
+    const response = await fetch('https://www.virustotal.com/api/v3/urls', {
+      method: 'POST',
+      headers: {
+        'x-apikey': process.env.VIRUSTOTAL_API_KEY,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `url=${encodeURIComponent(url)}`
+    });
+    const data = await response.json();
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error('Scan Error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// VirusTotal report endpoint
+app.post('/api/report', async (req, res) => {
+  const { analysisId } = req.body;
+  if (!analysisId) return res.status(400).json({ error: 'Missing analysisId in request body' });
+
+  try {
+    const response = await fetch(
+      `https://www.virustotal.com/api/v3/analyses/${analysisId}`,
+      {
+        headers: {
+          "x-apikey": process.env.VIRUSTOTAL_API_KEY,
+        },
+      }
+    );
+    const data = await response.json();
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error("Report Error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.listen(5000);

@@ -1,13 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 
-const ALGO_EXPLORER_BASE = "https://testnet.algoexplorer.io/tx"; 
+const ALGO_EXPLORER_BASE = "https://testnet.algoexplorer.io/tx";
 
 export default function BlockchainLogger({ result, trigger = "button" }) {
   const [loading, setLoading] = useState(false);
   const [txId, setTxId] = useState("");
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+
+  // To prevent setting state after unmount
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    if (trigger === "mount") {
+      logToBlockchain();
+    }
+    return () => {
+      isMounted.current = false;
+    };
+    // Only run on mount/unmount and when trigger changes
+    // eslint-disable-next-line
+  }, [trigger]);
 
   const prepareLogMessage = () => {
     const message = {
@@ -33,29 +48,31 @@ export default function BlockchainLogger({ result, trigger = "button" }) {
 
       if (res.data && (res.data.txId || res.data.txid || res.data.id)) {
         const realTxId = res.data.txId || res.data.txid || res.data.id;
-        setTxId(realTxId);
-        setSuccessMsg("Threat analysis successfully logged to Algorand blockchain!");
+        if (isMounted.current) {
+          setTxId(realTxId);
+          setSuccessMsg(
+            "Threat analysis successfully logged to Algorand blockchain!"
+          );
+        }
       } else {
-        throw new Error("Unexpected response from backend: " + JSON.stringify(res.data));
+        throw new Error(
+          "Unexpected response from backend: " + JSON.stringify(res.data)
+        );
       }
     } catch (e) {
-      setError(
-        e?.response?.data?.error ||
-        e?.response?.data?.message ||
-        e.message ||
-        "Failed to log to blockchain."
-      );
+      if (isMounted.current) {
+        setError(
+          e?.response?.data?.error ||
+            e?.response?.data?.message ||
+            e.message ||
+            "Failed to log to blockchain."
+        );
+      }
     } finally {
-      setLoading(false);
+      if (isMounted.current) setLoading(false);
     }
   };
 
-  React.useEffect(() => {
-    if (trigger === "mount") {
-      logToBlockchain();
-    }
-    
-  }, []); 
   return (
     <div className="w-full max-w-lg mx-auto mt-12 bg-white shadow rounded-xl p-6 flex flex-col gap-4 border border-gray-200">
       <h2 className="text-xl font-bold text-blue-700 mb-2 flex gap-2 items-center">
@@ -85,7 +102,8 @@ export default function BlockchainLogger({ result, trigger = "button" }) {
           {successMsg}
           {txId && (
             <div>
-              <span className="font-semibold">Transaction ID:</span> <span className="font-mono text-xs break-all">{txId}</span>
+              <span className="font-semibold">Transaction ID:</span>{" "}
+              <span className="font-mono text-xs break-all">{txId}</span>
               <br />
               <a
                 href={`${ALGO_EXPLORER_BASE}/${txId}`}
@@ -103,6 +121,5 @@ export default function BlockchainLogger({ result, trigger = "button" }) {
         This logs a summary of the risk analysis to the decentralized Algorand blockchain for audit & verification.
       </div>
     </div>
-  
   );
 }

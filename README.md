@@ -192,6 +192,13 @@ Contributions are welcome!
 
 ---
 
+## Hackathon & Platform
+
+- **Built on [Bolt.new](https://bolt.new/)** 
+- [![Built on Bolt](https://public-assets.devpost.com/badges/Bolt/Bolt-dark.svg)](https://bolt.new/) 
+
+---
+
 ## License
 
 [MIT](LICENSE)

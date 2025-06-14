@@ -15,9 +15,6 @@ import {
 } from 'lucide-react';
 import FeatureCard from "./FeatureCard";
 
-
-const VIRUSTOTAL_API_KEY = import.meta.env.VITE_VT_API_KEY;
-
 function Homepage() {
   const [demoInput, setDemoInput] = useState('');
   const [demoResult, setDemoResult] = useState(null);
@@ -26,58 +23,75 @@ function Homepage() {
 
   const navigate = useNavigate();
 
- 
   const isLikelyUrl = (text) => {
     try {
-  
       new URL(text);
       return true;
     } catch {
-    
       return /^https?:\/\/|www\./i.test(text.trim());
     }
   };
 
- 
   const analyzeDemoInput = async () => {
+    if (!demoInput.trim()) {
+      setApiError("Please enter a message or link.");
+      setDemoResult(null);
+      return;
+    }
     setLoading(true);
     setApiError('');
     setDemoResult(null);
 
-   
     try {
-      let analysisId = null;
       let inputType = isLikelyUrl(demoInput) ? 'url' : 'file';
-      let response = null;
 
       if (inputType === 'url') {
-   
-        response = await fetch("https://www.virustotal.com/api/v3/urls", {
+        // Step 1: Submit the URL to your backend
+        const submitRes = await fetch("/api/scan", {
           method: "POST",
-          headers: {
-            "x-apikey": VIRUSTOTAL_API_KEY,
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: `url=${encodeURIComponent(demoInput)}`
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: demoInput.trim() })
         });
-        const submitData = await response.json();
-        if (!submitData.data || !submitData.data.id) throw new Error("VirusTotal submission failed.");
-        analysisId = submitData.data.id;
 
-     
-        response = await fetch(`https://www.virustotal.com/api/v3/analyses/${analysisId}`, {
-          headers: { "x-apikey": import.meta.env.VITE_VT_API_KEY }
-        });
-        const analysis = await response.json();
+        let submitData;
+        try {
+          submitData = await submitRes.json();
+        } catch {
+          throw new Error("Invalid server response.");
+        }
 
-        
+        if (!submitRes.ok || !submitData.data?.id) {
+          throw new Error(submitData.error || "VirusTotal submission failed.");
+        }
+
+        const analysisId = submitData.data.id;
+
+        // Step 2: Poll your backend for the analysis result
+        let analysis = null, tries = 0;
+        while (tries < 10) {
+          const reportRes = await fetch("/api/report", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ analysisId })
+          });
+          try {
+            analysis = await reportRes.json();
+          } catch {
+            analysis = null;
+            break;
+          }
+          if (analysis?.data?.attributes?.status === "completed") break;
+          await new Promise(res => setTimeout(res, 1200));
+          tries++;
+        }
+
         if (analysis && analysis.data && analysis.data.attributes && analysis.data.attributes.stats) {
           const stats = analysis.data.attributes.stats;
           const total = Object.values(stats).reduce((a, b) => a + b, 0);
           const malicious = stats.malicious || 0;
           const suspicious = stats.suspicious || 0;
-         
-          let confidence = Math.round(((malicious + suspicious) / total) * 100) + "%";
+
+          let confidence = Math.round(((malicious + suspicious) / (total || 1)) * 100) + "%";
           let type, message;
           if (malicious > 0) {
             type = "high-risk";
@@ -95,7 +109,7 @@ function Homepage() {
           setDemoResult({ type: "safe", message: "Safe - No known threats detected", confidence: "99%" });
         }
       } else {
-       
+        // Simple text threat analysis logic (unchanged)
         const suspiciousKeywords = [
           'urgent', 'act now', 'limited time', 'click here', 'verify account', 'suspended', 'immediate action'
         ];
@@ -121,7 +135,6 @@ function Homepage() {
     }
     setLoading(false);
   };
-
 
   const features = [
     {
@@ -160,7 +173,6 @@ function Homepage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white font-sans">
-      
       <style>
         {`
         .bolt-badge {
