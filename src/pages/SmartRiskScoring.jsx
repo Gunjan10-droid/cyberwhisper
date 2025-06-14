@@ -1,8 +1,9 @@
 import React from "react";
 import { useThreatAnalysis } from "./ThreatAnalysisContext";
 import { useNavigate } from "react-router-dom";
+import BlockchainLogger from "./BlockchainLogger"; 
 
-// Visual configs for status
+
 const STATUS_UI = {
   "Safe": {
     color: "bg-green-100 text-green-700 border-green-300",
@@ -41,7 +42,7 @@ const CATEGORY_COLORS = {
   "Other": "bg-gray-100 text-gray-700 border-gray-300"
 };
 
-// Progress bar for confidence score
+
 function ScoreBar({ score }) {
   let barColor =
     score > 80 ? "bg-green-500"
@@ -62,7 +63,7 @@ export default function SmartRiskScoring() {
   const { analysis } = useThreatAnalysis();
   const navigate = useNavigate();
 
-  // If no analysis data, guide user to tools
+
   if (!analysis) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 px-4">
@@ -94,7 +95,7 @@ export default function SmartRiskScoring() {
     );
   }
 
-  // Visuals for existing analysis
+
   const statusUI = STATUS_UI[analysis.status] || STATUS_UI["Suspicious"];
   const catColor = CATEGORY_COLORS[analysis.category] || CATEGORY_COLORS["Other"];
 
@@ -111,7 +112,7 @@ export default function SmartRiskScoring() {
           <span className="text-xs text-gray-500 w-7 shrink-0">Input:</span>
           <div className="flex-1 font-mono bg-gray-50 rounded px-3 py-1.5 text-gray-700 break-all">{analysis.input}</div>
         </div>
-        {/* Status Badge & Category */}
+   
         <div className="flex flex-wrap items-center gap-3">
           <span
             className={`flex items-center gap-2 px-3 py-1 border rounded-full text-sm font-semibold ${statusUI.color}`}
@@ -130,7 +131,7 @@ export default function SmartRiskScoring() {
             Confidence: <span className="font-bold text-base text-gray-800">{analysis.score}/100</span>
           </span>
         </div>
-        {/* Score Progress Bar */}
+       
         <ScoreBar score={analysis.score} />
         {/* Detailed Explanations */}
         <div className="bg-gray-50 rounded-lg border border-gray-200 py-3 px-4">
@@ -141,7 +142,11 @@ export default function SmartRiskScoring() {
             ))}
           </ul>
         </div>
-        {/* Actions */}
+
+    
+        <BlockchainLogger result={analysis} trigger="button" />
+
+    
         <div>
           <button
             className="w-full md:w-auto px-4 py-2 bg-blue-700 text-white rounded-lg shadow hover:bg-blue-800 font-semibold transition"
@@ -149,7 +154,6 @@ export default function SmartRiskScoring() {
           >
             Analyze Another
           </button>
-
         </div>
         <div className="text-xs text-gray-400 text-center mt-5">
           Powered by <span className="font-semibold">CyberWhisper</span>

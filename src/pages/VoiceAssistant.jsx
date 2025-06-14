@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useThreatAnalysis } from "./ThreatAnalysisContext";
 import { useNavigate } from "react-router-dom";
 
-// Expanded threat detection word list
+
 const THREAT_LABELS = {
   safe: {
     level: "Safe",
@@ -26,7 +26,7 @@ const THREAT_LABELS = {
 
 function analyzeThreat(text) {
   const lower = text.toLowerCase();
-  // Expanded list of scam/phishing/malicious keywords and phrases
+ 
   const suspiciousWords = [
     "urgent", "password", "login", "bank", "click here", "reset",
     "limited time", "free", "winner", "verify", "account", "suspend",
@@ -76,7 +76,7 @@ function analyzeThreat(text) {
   });
   const foundUrls = text.match(urlRegex);
 
-  // Threat logic
+
   if (matches === 0 && !foundUrls) {
     return {
       label: THREAT_LABELS.safe,
@@ -139,7 +139,7 @@ export default function VoiceAssistant() {
   const { setAnalysis } = useThreatAnalysis();
   const navigate = useNavigate();
 
-  // Start speech recognition
+
   const startListening = () => {
     setError("");
     setTranscript("");
@@ -219,7 +219,7 @@ export default function VoiceAssistant() {
     recognition.start();
   };
 
-  // Stop speech recognition
+
   const stopListening = () => {
     recognitionRef.current && recognitionRef.current.stop();
     setListening(false);

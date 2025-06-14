@@ -27,27 +27,26 @@ const CyberWhisperFooterLogo = () => (
       </filter>
     </defs>
     
-    {/* Text first - made larger */}
+
     <text x="15" y="60" fontFamily="Arial, sans-serif" fontSize="36" fontWeight="bold" fill="#3B82F6">
       CyberWhisper
     </text>
     
-    {/* Background circle for depth - positioned with moderate gap */}
+
     <circle cx="310" cy="50" r="32" fill="rgba(59, 130, 246, 0.1)" stroke="rgba(59, 130, 246, 0.3)" strokeWidth="1"/>
     
-    {/* Shield shape - positioned with moderate gap */}
+
     <path d="M294 35 C294 30, 298 25, 310 25 C322 25, 326 30, 326 35 L326 55 C326 65, 318 75, 310 75 C302 75, 294 65, 294 55 Z" 
           fill="url(#footerShieldGradient)" 
           filter="url(#footerGlow)" 
           stroke="rgba(255, 255, 255, 0.2)" 
           strokeWidth="1"/>
-    
-    {/* Microphone in center of shield - adjusted coordinates */}
+
     <rect x="307" y="40" width="6" height="15" rx="3" fill="white" opacity="0.9"/>
     <rect x="305" y="58" width="10" height="3" rx="1.5" fill="white" opacity="0.7"/>
     <line x1="310" y1="61" x2="310" y2="65" stroke="white" strokeWidth="2" opacity="0.7"/>
     
-    {/* Sound waves emanating from the shield - adjusted coordinates */}
+
     <path d="M330 40 Q335 45, 330 50" stroke="url(#footerWaveGradient)" strokeWidth="2" fill="none" opacity="0.8">
       <animate attributeName="opacity" values="0.8;0.4;0.8" dur="2s" repeatCount="indefinite"/>
     </path>
@@ -73,8 +72,14 @@ const Footer = () => {
               Protecting users from digital fraud through advanced AI and voice recognition technology.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-blue-400 hover:text-blue-300 transition-colors">GitHub</a>
-              <a href="#" className="text-blue-400 hover:text-blue-300 transition-colors">Devpost</a>
+              <a 
+                href="https://github.com/Gunjan10-droid/cyberwhisper" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                GitHub
+              </a>
               <a href="#" className="text-blue-400 hover:text-blue-300 transition-colors">Documentation</a>
             </div>
           </div>

@@ -4,14 +4,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useThreatAnalysis } from "./ThreatAnalysisContext";
 import { useNavigate } from "react-router-dom";
 
-/**
- * This component uses VirusTotal's public API (free, with rate limits) to scan URLs.
- * For text, it simply checks for suspicious keywords (as a demo).
- * Tailwind CSS is used for styling.
- * Now with react-toastify for notifications.
- * Now integrates with SmartRiskScoring via ThreatAnalysisContext.
- */
-
 const VT_API_KEY = import.meta.env.VITE_VT_API_KEY;
 const VT_SCAN_URL = "https://www.virustotal.com/api/v3/urls";
 const VT_REPORT_URL = "https://www.virustotal.com/api/v3/analyses/";
@@ -75,7 +67,7 @@ export default function LinkTextAnalysis() {
 
     if (isUrl(input)) {
       try {
-        // Step 1: Submit URL for analysis
+        
         const submitRes = await fetch(VT_SCAN_URL, {
           method: "POST",
           headers: {
@@ -91,7 +83,6 @@ export default function LinkTextAnalysis() {
         const submitData = await submitRes.json();
         const analysisId = submitData.data.id;
 
-        // Step 2: Poll for analysis report
         let reportData, tries = 0;
         while (tries < 10) {
           const reportRes = await fetch(VT_REPORT_URL + analysisId, {
@@ -105,7 +96,6 @@ export default function LinkTextAnalysis() {
 
         if (!reportData.data?.attributes?.results) throw new Error("Analysis timed out or failed.");
 
-        // Step 3: Summarize results
         const stats = reportData.data.attributes.stats;
         const positives = stats.malicious + stats.suspicious;
         const total = Object.values(stats).reduce((a, b) => a + b, 0);
@@ -135,7 +125,7 @@ export default function LinkTextAnalysis() {
         toast.error("Scan failed!");
       }
     } else {
-      // Simple local check for demo (API-free)
+      
       const threat = checkTextThreat(input);
       const analysisResult = {
         input: input.trim(),
@@ -158,7 +148,7 @@ export default function LinkTextAnalysis() {
 
   const handleViewFullAnalysis = () => {
     if (result) {
-      // Analysis already stored in context above
+      
       navigate("/smartriskscoring");
     }
   };
