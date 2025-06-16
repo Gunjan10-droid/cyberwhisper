@@ -46,7 +46,7 @@ function Homepage() {
       let inputType = isLikelyUrl(demoInput) ? 'url' : 'file';
 
       if (inputType === 'url') {
-        // Step 1: Submit the URL to your backend
+        
         const submitRes = await fetch("/api/scan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -66,7 +66,7 @@ function Homepage() {
 
         const analysisId = submitData.data.id;
 
-        // Step 2: Poll your backend for the analysis result
+     
         let analysis = null, tries = 0;
         while (tries < 10) {
           const reportRes = await fetch("/api/report", {
@@ -109,7 +109,7 @@ function Homepage() {
           setDemoResult({ type: "safe", message: "Safe - No known threats detected", confidence: "99%" });
         }
       } else {
-        // Simple text threat analysis logic (unchanged)
+        
         const suspiciousKeywords = [
           'urgent', 'act now', 'limited time', 'click here', 'verify account', 'suspended', 'immediate action'
         ];
@@ -214,7 +214,7 @@ function Homepage() {
         </a>
       </div>
 
-      {/* Hero Section */}
+
       <section className="pt-15 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">

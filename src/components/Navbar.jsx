@@ -5,19 +5,19 @@ import { Link, useNavigate } from 'react-router-dom';
 const CyberWhisperLogo = () => (
   <svg width="333" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg" className="h-15 w-auto">
     <defs>
-      {/* Gradient for the shield */}
+
       <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" style={{stopColor:"#3B82F6", stopOpacity:1}} />
         <stop offset="50%" style={{stopColor:"#1E40AF", stopOpacity:1}} />
         <stop offset="100%" style={{stopColor:"#7C3AED", stopOpacity:1}} />
       </linearGradient>
-      {/* Gradient for the mic waves */}
+
       <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" style={{stopColor:"#06B6D4", stopOpacity:0.8}} />
         <stop offset="50%" style={{stopColor:"#3B82F6", stopOpacity:0.6}} />
         <stop offset="100%" style={{stopColor:"#8B5CF6", stopOpacity:0.4}} />
       </linearGradient>
-      {/* Glow effect */}
+    
       <filter id="glow">
         <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
         <feMerge>
@@ -57,7 +57,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // For smooth scrolling to section, fallback to route if not on home
+
   const handleScrollOrRoute = (id, route = "/") => {
     if (window.location.pathname === route) {
       const section = document.getElementById(id);
@@ -81,7 +81,6 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-blue-100 hover:text-blue-400 transition-colors">Home</Link>
             <button
@@ -106,7 +105,7 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile menu button */}
+
           <button
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -116,7 +115,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+   
         {isMenuOpen && (
           <div className="md:hidden bg-slate-800 border-t border-blue-800/50">
             <div className="px-2 pt-2 pb-3 space-y-1">

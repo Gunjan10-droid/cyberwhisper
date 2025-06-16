@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import fetch from "node-fetch"; // Make sure to install: npm install node-fetch
+import fetch from "node-fetch"; 
 
 dotenv.config();
 
@@ -9,7 +9,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Blockchain log endpoint (existing)
 app.post("/api/log", async (req, res) => {
   try {
     const note = req.body.note || "No message provided";
@@ -25,7 +24,7 @@ app.post("/api/log", async (req, res) => {
   }
 });
 
-// VirusTotal scan endpoint
+
 app.post('/api/scan', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'Missing URL in request body' });
@@ -47,7 +46,7 @@ app.post('/api/scan', async (req, res) => {
   }
 });
 
-// VirusTotal report endpoint
+
 app.post('/api/report', async (req, res) => {
   const { analysisId } = req.body;
   if (!analysisId) return res.status(400).json({ error: 'Missing analysisId in request body' });

@@ -29,15 +29,15 @@ const team = [
   {
     name: "Gunjan Agrawal",
     role: "Founder & Lead Developer",
-    avatar: "https://avatars.githubusercontent.com/u/142145209?v=4", // Placeholder
+    avatar: "https://avatars.githubusercontent.com/u/142145209?v=4", 
   },
 
-  // Add more or replace with actual team members as needed
+  
 ];
 
 const About = () => (
   <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white font-sans">
-    {/* Hero Section */}
+
     <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto text-center">
         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-500 bg-clip-text text-transparent">
@@ -49,7 +49,7 @@ const About = () => (
       </div>
     </section>
 
-    {/* Mission Section */}
+    
     <section className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto text-center">
         <h2 className="text-2xl font-bold text-blue-300 mb-4">Our Mission</h2>
@@ -59,7 +59,7 @@ const About = () => (
       </div>
     </section>
 
-    {/* Why We Built This Section */}
+    
     <section className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto text-center">
         <h2 className="text-2xl font-bold text-blue-300 mb-4">Why We Built This</h2>
@@ -72,7 +72,6 @@ const About = () => (
       </div>
     </section>
 
-    {/* Core Values */}
     <section className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <h2 className="text-2xl font-bold text-blue-300 text-center mb-8">Our Core Values</h2>
@@ -91,7 +90,7 @@ const About = () => (
       </div>
     </section>
 
-    {/* Meet the Team */}
+  
     <section className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold text-blue-300 text-center mb-8">Meet the Team</h2>
@@ -107,7 +106,7 @@ const About = () => (
               <div className="text-blue-400 text-sm">{member.role}</div>
             </div>
           ))}
-          {/* To add real team members, replace above with actual data */}
+       
         </div>
       </div>
     </section>

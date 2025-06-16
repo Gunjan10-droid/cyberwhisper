@@ -33,6 +33,7 @@
 ## Tech Stack
 
 - **Frontend:** React, Tailwind CSS
+- **Backend:** Express
 - **Routing:** React Router
 - **SVG/Icons:** Custom SVG, Lucide Icons
 - **APIs:** VirusTotal Public API
@@ -48,6 +49,7 @@
 - **README.md** – This documentation file.
 - **public/** – Static assets (including favicon, index.html)
 - **src/** – All source code:
+- **api/** - server.js
 
 ### Key Files & Folders
 
@@ -148,7 +150,7 @@
 3. **Add your VirusTotal API key:**  
    Create a `.env` file in the root and add:
    ```
-   VITE_VIRUSTOTAL_API_KEY=your_key_here
+   VIRUSTOTAL_API_KEY=your_key_here
    ```
 
 4. **Start development server:**
@@ -161,7 +163,7 @@
 
 ## Environment Variables
 
-- `VITE_VIRUSTOTAL_API_KEY` — Your [VirusTotal](https://virustotal.com/) public API key (free registration available).
+- `VIRUSTOTAL_API_KEY` — Your [VirusTotal](https://virustotal.com/) public API key (free registration available).
 
 ---
 
@@ -195,8 +197,7 @@ Contributions are welcome!
 ## Hackathon & Platform
 
 - **Built on [Bolt.new](https://bolt.new/)** 
-- [![Built on Bolt](https://public-assets.devpost.com/badges/Bolt/Bolt-dark.svg)](https://bolt.new/) 
-
+- https://bolt.new/~/github-tkwii22n-w8t4tlsd
 ---
 
 ## License

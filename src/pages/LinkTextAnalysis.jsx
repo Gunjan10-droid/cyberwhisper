@@ -71,7 +71,7 @@ export default function LinkTextAnalysis() {
           body: JSON.stringify({ url: input.trim() })
         });
 
-        // --- CHECK THE RESPONSE HERE ---
+        
         let submitData;
         try {
           submitData = await submitRes.json();
@@ -80,14 +80,14 @@ export default function LinkTextAnalysis() {
         }
 
         if (!submitRes.ok || !submitData.data || !submitData.data.id) {
-          // Show a detailed error if possible
+      
           throw new Error(
             typeof submitData.error === "object"
               ? JSON.stringify(submitData.error)
               : (submitData.error || "VirusTotal submission failed.")
           );
         }
-        // --------------------------------
+     
 
         const analysisId = submitData.data.id;
 

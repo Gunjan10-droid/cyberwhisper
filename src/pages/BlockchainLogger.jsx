@@ -20,8 +20,6 @@ export default function BlockchainLogger({ result, trigger = "button" }) {
     return () => {
       isMounted.current = false;
     };
-    // Only run on mount/unmount and when trigger changes
-    // eslint-disable-next-line
   }, [trigger]);
 
   const prepareLogMessage = () => {
