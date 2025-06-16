@@ -47,8 +47,7 @@
 ### Root
 
 - **README.md** – This documentation file.
-- **public/** – Static assets (including favicon, index.html)
-- **src/** – All source code:
+- **frontend/** – All source code:
 - **api/** - server.js
 
 ### Key Files & Folders
