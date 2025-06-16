@@ -4,6 +4,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useThreatAnalysis } from "./ThreatAnalysisContext";
 import { useNavigate } from "react-router-dom";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const THREAT_LABELS = [
   { level: "Safe", color: "bg-green-100 text-green-700", desc: "No threats detected." },
   { level: "Suspicious", color: "bg-yellow-100 text-yellow-700", desc: "Some signs of threat." },
@@ -63,7 +65,7 @@ export default function LinkTextAnalysis() {
 
     if (isUrl(input)) {
       try {
-        const submitRes = await fetch("/api/scan", {
+        const submitRes = await fetch(`${BACKEND_URL}/api/scan`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -94,7 +96,7 @@ export default function LinkTextAnalysis() {
         let reportData;
         let tries = 0;
         while (tries < 10) {
-          const reportRes = await fetch("/api/report", {
+          const reportRes = await fetch(`${BACKEND_URL}/api/report`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ analysisId }),

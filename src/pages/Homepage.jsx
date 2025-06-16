@@ -22,7 +22,7 @@ function Homepage() {
   const [apiError, setApiError] = useState('');
 
   const navigate = useNavigate();
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const isLikelyUrl = (text) => {
     try {
       new URL(text);
@@ -47,7 +47,7 @@ function Homepage() {
 
       if (inputType === 'url') {
         
-        const submitRes = await fetch("/api/scan", {
+        const submitRes = await fetch(`${backendUrl}/api/scan`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: demoInput.trim() })
@@ -69,7 +69,7 @@ function Homepage() {
      
         let analysis = null, tries = 0;
         while (tries < 10) {
-          const reportRes = await fetch("/api/report", {
+          const reportRes = await fetch(`${backendUrl}/api/report`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ analysisId })

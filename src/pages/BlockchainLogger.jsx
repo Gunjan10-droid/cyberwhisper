@@ -9,7 +9,7 @@ export default function BlockchainLogger({ result, trigger = "button" }) {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  // To prevent setting state after unmount
+
   const isMounted = useRef(true);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function BlockchainLogger({ result, trigger = "button" }) {
         note: prepareLogMessage(),
       };
 
-      const res = await axios.post("/api/log", payload);
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/log`, payload);
 
       if (res.data && (res.data.txId || res.data.txid || res.data.id)) {
         const realTxId = res.data.txId || res.data.txid || res.data.id;
